@@ -75,6 +75,7 @@ const unifiedServer = function(req, res) {
       pathName: trimPath(parsedUrl.pathname),
       method: method,
       queryString: queryStringObj,
+      header:headers,
       payload: helper.JSONtoObject(buffer)
     };
 
@@ -101,6 +102,7 @@ var router = {
   sample: handler.sample,
   "api/sample": handler.api,
   users: handler.users,
+  tokens:handler.tokens,
   notFound: handler.notFound
 };
 
