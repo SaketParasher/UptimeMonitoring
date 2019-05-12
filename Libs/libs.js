@@ -124,7 +124,7 @@ libs.update = function(dirName, fileName, data, callback) {
             }
           });
         } else {
-          callback("Error in Writting the file.");
+          callback("Error in Updating the file :- " + fileName);
         }
       });
     } else {
