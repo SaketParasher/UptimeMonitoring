@@ -21,6 +21,14 @@ const handler = require("./Libs/handler");
   console.log(result);
 });*/
 
+helper.sendTwilioMessage('9008089017','Hello',(err)=>{
+  if(err){
+    console.log('ERRRROR');
+    console.log(err);
+  }
+})
+
+
 let trimPath = function(pathName) {
   let splittedPath = pathName.split("/");
   if (splittedPath[0] == "") splittedPath.splice(0, 1);

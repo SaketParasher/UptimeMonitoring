@@ -1,7 +1,9 @@
 let libs = require("./libs");
 let helper = require("./helpers");
 let config = require("../config");
+const fs = require('fs');
 let handler = {};
+
 
 handler.home = function(data, callback) {
   data["home"] = "Homepage";
@@ -194,7 +196,7 @@ handler._users.put = function(data, callback) {
   }
 };
 
-// to delete pass the fileName in querystring
+// to delete pass the fileName ie userPhone in querystring and token in headers.
 handler._users.delete = function(data, callback) {
   let phone =
     typeof data.queryString.phone == "string" &&
@@ -205,12 +207,38 @@ handler._users.delete = function(data, callback) {
     let token = typeof data.header.token == "string" ? data.header.token : null;
     handler._tokens.validateToken(token, phone, isValid => {
       if (isValid) {
-        libs.delete("users", phone, err => {
-          if (!err) {
-            //callback(200, { response: "File deleted successfully" });
-            // if the user is deleted then remove all the checks created by that user
-          } else {
-            callback(500, { error: err });
+        // lookup the user before deleting it
+        libs.read("users",phone,(err,userData)=>{
+          if(!err && userData){
+            // if user exists then delete the user 
+              libs.delete("users", phone, err => {
+                if (!err) {
+                  //callback(200, { response: "File deleted successfully" });
+                  // if the user is deleted then remove all the checks created by that user
+                  // get the checks array of the user 
+                  let userChecks = typeof(userData.checks) == "object" && userData.checks instanceof Array ? userData.checks : [];
+                  if(userChecks.length >0){
+                    for(let check of userChecks){
+                      libs.fileExists("checks",check).then((exists)=>{
+                        libs.delete("checks",check,(err,res)=>{
+                            if(err == null){
+                              if(userChecks.indexOf(check) == userChecks.length-1){
+                                callback(200,`All Checks for this user with phone ${userData.phone} and the user ${userData.firstName} ${userData.lastName} is deleted`);
+                              }
+                                
+                            }else{
+                              callback(500,{error:`Error while deleting the ${check} at index ${check}. All Checks may not have been Deleted. `});
+                            }
+                        });
+                      });
+                    }
+                  }
+                } else {
+                  callback(500, { error: err });
+                }
+              });
+          }else{
+            callback(500,{error:'couldnt find the specified user with given phone number for deletion operation'});
           }
         });
       } else {
@@ -429,7 +457,7 @@ handler._checks.post = function(data, callback) {
       libs.read("tokens", token, (err, tokenData) => {
         if (!err && tokenData) {
           // If token exists then read  the user using phone number
-          libs.read("users", tokenData.phone, (err, userData) => {
+          libs.read("users", tokenData.phone, (err, userData) => {  
             if (!err && userData) {
               // if user don't already have a check array give it an empty array otherwise take its check array.
               let userChecks =

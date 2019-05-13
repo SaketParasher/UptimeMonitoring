@@ -5,7 +5,12 @@ environment.staging = {
   httpsPort: 4001,
   envName: "staging",
   hashingSecret: "thisIsAHashingSecret",
-  maxChecks: 5
+  maxChecks: 5,
+  twilio:{
+    accountSid:'AC0b723a7697819beddc78a9a84867c31c',
+    authToken:'d2bd82d2e5471457706d33c65b3fd12c',
+    fromPhone:'+917019609525'
+  }
 };
 
 environment.production = {
@@ -13,7 +18,12 @@ environment.production = {
   httpsPort: 5001,
   envName: "production",
   hashingSecret: "thisIsAanotherHashingSecret",
-  maxChecks: 5
+  maxChecks: 5,
+  twilio:{
+    accountSid:'AC0b723a7697819beddc78a9a84867c31c',
+    authToken:'d2bd82d2e5471457706d33c65b3fd12c',
+    fromPhone:'+917019609525'
+  }
 };
 
 var runEnv =

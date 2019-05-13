@@ -22,6 +22,18 @@ libs.dirExists = function(dirPath) {
   });
 };
 
+libs.fileExists = function(dirName,fileName){
+  return new Promise((resolve,reject)=>{
+    let filePath = path.join(this.baseDir,dirName,fileName)+'.json';
+    fs.exists(filePath,(exists)=>{
+      if(exists)
+        resolve(exists);
+      else
+      reject(exists);
+    })
+  });
+};
+
 libs.create = function(dirName, fileName, data, callback) {
   let dirPath = path.join(this.baseDir, dirName);
   this.dirExists(dirPath).then(
