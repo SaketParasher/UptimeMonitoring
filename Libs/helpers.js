@@ -2,8 +2,14 @@ let crypto = require("crypto");
 let config = require("../config");
 let queryString = require('querystring');
 let https = require('https');
+const stringDecoder = require('string_decoder').StringDecoder;
+
+const decoder = new stringDecoder('utf-8');
+let buffer = "";
 
 let helpers = {};
+
+
 
 helpers.hash = function(pass) {
   if (typeof pass == "string" && pass.length > 0) {
@@ -39,6 +45,7 @@ helpers.createRandomString = function(strLength){
   }
 }
 
+// TWILLIO MESSAGING SENDING FUNCTION 
 helpers.sendTwilioMessage = function(phone,message,callback){
 
   //validate parameters
@@ -70,7 +77,8 @@ helpers.sendTwilioMessage = function(phone,message,callback){
     }
 
     // Instantiate the request object
-    let req = https.request(requestDetails,(res)=>{
+    let twilioReq = https.request(requestDetails,(res)=>{
+      console.log('Response Arrived');
       // Grab the status of the sent request
       let status = res.statusCode;
       console.log('status :- '+status);
@@ -84,16 +92,18 @@ helpers.sendTwilioMessage = function(phone,message,callback){
     });
 
     // Bind the error handler on request so that it doesn't gets thrown back
-    req.on('error',(err)=>{
+    twilioReq.on('error',(err)=>{
       console.log('Error Occurred from error callabck');
-      callback(err);
+      console.log(err.message+' '+err.name);
+      callback(err); 
     });
 
     // Add the payload to the request.
-    req.write(stringPayload);
+    twilioReq.write(stringPayload);
 
     // End the Request
-    req.end();
+    twilioReq.end();
+    
 
   }else{
     callback(' Given parameters were missing or invalid');

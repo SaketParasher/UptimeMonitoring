@@ -122,6 +122,22 @@ libs.readDirectory = function(dirName, callback) {
   });
 };
 
+// list all the items in a directory in an Array.
+libs.list = function(dirName,callback){
+  let dirPath = path.join(__dirname,'/../.data/',dirName);
+  fs.readdir(dirPath,(err,files)=>{
+    if(!err && files.length > 0){
+      let allFiles = [];
+      for(let file of files){
+        allFiles.push(file.split('.')[0]);
+      }
+      callback(null,allFiles);
+    }else{
+      callback(err);
+    }
+  })
+}
+
 libs.update = function(dirName, fileName, data, callback) {
   let filePath = path.join(this.baseDir, dirName, fileName) + ".json";
   fs.open(filePath, "w", data, (err, fileDesc) => {
