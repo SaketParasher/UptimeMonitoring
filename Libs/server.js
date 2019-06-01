@@ -1,4 +1,3 @@
-
 // Dependencies
 const http = require("http");
 const https = require("https");
@@ -9,7 +8,7 @@ const config = require("../config");
 const lib = require("./libs");
 const helper = require("./helpers");
 const handler = require("./handler");
-const path = require('path');
+const path = require("path");
 
 // @TODO Delete it later
 /*lib.create("users", "second", { secKey: "secVal" }, result => {
@@ -19,17 +18,20 @@ const path = require('path');
   console.log(result);
 });*/
 
-
-// TESTING TWILIO MESSAGING 
+// TESTING TWILIO MESSAGING
 
 /*
-helper.sendTwilioMessage('9008089017','Hello',(err)=>{
-  if(err){
-    console.log('ERRRROR');
+helper.sendTwilioMessage("7019609525", "Hello", err => {
+  if (err) {
+    console.log("ERRRROR");
     console.log(err);
   }
-})
+});
 */
+
+//helper.sendTwilioMessage("7019609525", "Hello Maa");
+
+//helper.sendNexmoMessage("Nexmo", "917019609525", "Hello Maa");
 
 // Container for the server
 let server = {};
@@ -44,8 +46,8 @@ let trimPath = function(pathName) {
 };
 
 const httpsServerCOnfig = {
-  key: fs.readFileSync(path.join(__dirname,"../Https/key.pem")),
-  cert: fs.readFileSync(path.join(__dirname,"../Https/cert.pem"))
+  key: fs.readFileSync(path.join(__dirname, "../Https/key.pem")),
+  cert: fs.readFileSync(path.join(__dirname, "../Https/cert.pem"))
 };
 
 const httpServer = http.createServer((req, res) => {
@@ -120,17 +122,22 @@ var router = {
   notFound: handler.notFound
 };
 
+server.init = function() {
+  httpsServer.listen(config.httpsPort, () => {
+    console.log(
+      `Server is listening on port ${config.httpsPort} in ${
+        config.envName
+      } Environment`
+    );
+  });
 
-
-server.init = function(){
-    httpsServer.listen(config.httpsPort, () => {
-    console.log(`Server is listening on port ${config.httpsPort} in ${config.envName} Environment`);
-    });
-
-    httpServer.listen(config.httpPort, () => {
-        console.log(`Server is listening on port ${config.httpPort} in ${config.envName} Environment`);
-    });
-}
-
+  httpServer.listen(config.httpPort, () => {
+    console.log(
+      `Server is listening on port ${config.httpPort} in ${
+        config.envName
+      } Environment`
+    );
+  });
+};
 
 module.exports = server;

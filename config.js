@@ -6,10 +6,14 @@ environment.staging = {
   envName: "staging",
   hashingSecret: "thisIsAHashingSecret",
   maxChecks: 5,
-  twilio:{
-    accountSid:'AC0b723a7697819beddc78a9a84867c31c',
-    authToken:'d2bd82d2e5471457706d33c65b3fd12c',
-    fromPhone:'+917019609525'
+  twilio: {
+    accountSid: "AC415e5f8009feacf33670a36dd62a3dbb",
+    authToken: "06527706062f5acd760f7dc3edf08774",
+    fromPhone: "+917019609525"
+  },
+  nexmo: {
+    apiKey: "451470fb",
+    apiSecret: "SKQxGfwPcudkp1HL"
   }
 };
 
@@ -19,10 +23,14 @@ environment.production = {
   envName: "production",
   hashingSecret: "thisIsAanotherHashingSecret",
   maxChecks: 5,
-  twilio:{
-    accountSid:'AC0b723a7697819beddc78a9a84867c31c',
-    authToken:'d2bd82d2e5471457706d33c65b3fd12c',
-    fromPhone:'+917019609525'
+  twilio: {
+    accountSid: "AC415e5f8009feacf33670a36dd62a3dbb",
+    authToken: "06527706062f5acd760f7dc3edf08774",
+    fromPhone: "+917019609525"
+  },
+  nexmo: {
+    apiKey: "451470fb",
+    apiSecret: "SKQxGfwPcudkp1HL"
   }
 };
 

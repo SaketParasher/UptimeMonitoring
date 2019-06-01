@@ -2,19 +2,18 @@
  * index.js for our API
  */
 
-const server = require('./Libs/server');
-const worker = require('./Libs/worker');
+const server = require("./Libs/server");
+const worker = require("./Libs/worker");
 
 let app = {};
 
-app.init = function(){
-
+app.init = function() {
   // Initialise the server
   server.init();
 
   // Initialise the workers
-  //worker.init();
-}
+  worker.init();
+};
 
 app.init();
 
