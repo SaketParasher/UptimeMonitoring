@@ -11,6 +11,7 @@ const https = require("https");
 const url = require("url");
 const libs = require("./libs");
 const helpers = require("./helpers");
+const _logs = require("./logs");
 
 // Instantiate the worker container object
 let workers = {};
@@ -118,10 +119,6 @@ workers.performCheck = function(originalCheckData) {
 
   let hostName = parsedUrl.hostname;
   let path = parsedUrl.path;
-
-  console.log(parsedUrl);
-  console.log(hostName);
-  console.log(path);
   // construct the request
   var requestDtails = {
     protocol: originalCheckData.protocol + ":",
@@ -131,7 +128,6 @@ workers.performCheck = function(originalCheckData) {
     timeout: originalCheckData.timeoutSeconds * 1000
   };
 
-  console.log(originalCheckData);
   // Instantiate the request object
   let _moduleToUse = originalCheckData.protocol;
   if (_moduleToUse == "https") {
@@ -197,6 +193,48 @@ workers.processCheckOutcome = function(originalCheckData, checkOutCome) {
     originalCheckData.lastChecked && originalCheckData.state != state
       ? true
       : false;
+
+  // Log Function
+  workers.log = function(
+    originalCheckData,
+    checkOutCome,
+    state,
+    alertWarranted,
+    timeOfCheck
+  ) {
+    let logData = {
+      check: originalCheckData,
+      outcome: checkOutCome,
+      state: state,
+      alert: alertWarranted,
+      time: timeOfCheck
+    };
+
+    // convert data to string
+    var logString = JSON.stringify(logData);
+
+    // Determine the log file name
+    let logFileName = originalCheckData.id;
+
+    // Append the log string to the file
+    _logs.append(logFileName, logString, err => {
+      if (!err) {
+        console.log("Logging to file succedded");
+      } else {
+        console.log("Logging to file failed");
+      }
+    });
+  };
+
+  // Log the outcome
+  let timeOfCheck = new Date();
+  workers.log(
+    originalCheckData,
+    checkOutCome,
+    state,
+    alertWarranted,
+    timeOfCheck.toDateString() + " " + timeOfCheck.toLocaleTimeString()
+  );
 
   // update CheckData
   let newCheckData = originalCheckData;
