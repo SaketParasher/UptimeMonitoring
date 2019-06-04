@@ -246,7 +246,7 @@ workers.processCheckOutcome = function(originalCheckData, checkOutCome) {
     if (!err) {
       // send the new check data to the next phase in the process if needed
       if (alertWarranted) {
-        workers.alertUserToStatusChange(newCheckData);
+        //workers.alertUserToStatusChange(newCheckData);
       } else {
         console.log("Check outcome has not changed , no alert needed");
       }
@@ -292,6 +292,45 @@ workers.gatherAllChecks = function() {
   });
 };
 
+// Rotate (compress) the log files
+workers.rotateLogs = function(){
+  // List all the non compressed log files. false is passed as first arg to signify that we need only decompressed logs not compressed ones.
+  // logs.list will list all the logs and we pass false as 1st arg to denote that we want to list only decompressed logs and not compressed ones.
+  _logs.list(false,(err,logs)=>{
+    if(!err && logs && logs.length > 0){
+      for(let log of logs){
+        // compress the data to a different file
+        let logId = log.replace('.log','');
+        let newLogId = logId+'-'+Date.now();
+        _logs.compress(logId,newLogId,(err)=>{
+          if(!err){
+            // Truncate the log
+            _logs.truncate(logId,(err)=>{
+              if(!err){
+                console.log(' Success truncating logFiles');
+              }else{
+                console.log('Error truncating log file');
+              }
+            });
+          }else{
+            console.log('Error compressing one of the log file.',err);
+          }
+        });
+      }
+    }else{
+      console.log('Error :- could not find any logs to rotate');
+    }
+  })
+};
+
+// Timer to execute the log-rotation process once per day
+workers.logRotationLoop = function(){
+  setInterval(function() {
+  }, 1000 * 60 * 60 * 24);
+   workers.rotateLogs();
+};
+
+
 // Worker init script
 workers.init = function() {
   // Execute all the checks immediately
@@ -299,6 +338,12 @@ workers.init = function() {
 
   // set a interval so the checks will execute later on
   this.loop();
+
+  // compress all the logs immediately
+  workers.rotateLogs();
+
+  // call the compression loop so logs will be compressed later on 
+  workers.logRotationLoop();
 };
 
 // export the worker container object

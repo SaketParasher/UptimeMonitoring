@@ -3,13 +3,14 @@ let config = require("../config");
 let queryString = require("querystring");
 let https = require("https");
 const stringDecoder = require("string_decoder").StringDecoder;
-const Nexmo = require("nexmo");
+//const Nexmo = require("nexmo");
 
+/*
 const nexmo = new Nexmo({
   apiKey: config.nexmo.apiKey,
   apiSecret: config.nexmo.apiSecret
 });
-
+*/
 const decoder = new stringDecoder("utf-8");
 let buffer = "";
 
@@ -143,6 +144,7 @@ helpers.sendTwilioMessage = function(phone, message, callback) {
   }
 };
 
+/*
 helpers.sendNexmoMessage = function(from, to, message) {
   nexmo.message.sendSms(from, to, message, (err, responseData) => {
     if (err) {
@@ -157,6 +159,6 @@ helpers.sendNexmoMessage = function(from, to, message) {
       }
     }
   });
-};
+};*/
 
 module.exports = helpers;
